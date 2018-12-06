@@ -1,0 +1,19 @@
+version: '2'
+services:
+  server:
+    build:
+      context: .
+    # command: npm run startapi
+    ports:
+      - "8080:8080"
+    environment: 
+      - mongourl=mongodb://mongodb:TDwnA9?f8ajx@52.66.168.70:27017/admin
+  client:
+    build:
+      context: ./client/
+    # command: npm start
+    depends_on:
+      - server
+    ports:
+      - "3000:3000"
+    

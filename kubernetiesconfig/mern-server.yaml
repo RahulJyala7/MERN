@@ -1,0 +1,36 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata: 
+  name: mongo-cluster-test
+  namespace: botnext
+spec: 
+  replicas: 1
+  template: 
+    metadata: 
+      labels: 
+        app: mongo-cluster-test
+    spec: 
+      containers: 
+        - image: saurabhtyagi/mongoserver:0.0.0.3
+          imagePullPolicy: Always
+          name: mongo-cluster-test
+          ports: 
+            - containerPort: 4000
+          env:
+            - name: mongourl
+              value: mongodb://mongo-0.mongo.botnext,mongo-1.mongo.botnext,mongo-2.mongo.botnext,mongo-3.mongo.botnext:27017/mydb?replicaSet=rs0
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: mongo-cluster-svc
+  namespace: botnext
+spec: 
+  ports: 
+     -  port: 4000
+        protocol: TCP
+        targetPort: 4000
+        nodePort: 32000
+  selector: 
+    app: mongo-cluster-test
+  type: NodePort
